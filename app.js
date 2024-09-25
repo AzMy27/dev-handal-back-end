@@ -33,12 +33,8 @@ const { title } = require("process");
 const port = 3000;
 
 // Schemas
-const {
-  placeSchema,
-} = require("./schemas/place");
-const {
-  reviewSchema,
-} = require("./schemas/review");
+const { placeSchema } = require("./schemas/place");
+const { reviewSchema } = require("./schemas/review");
 
 app.get("/", (req, res) => {
   res.render("home");
@@ -53,13 +49,9 @@ app.get(
 );
 
 const validatePlace = (req, res, next) => {
-  const { error } = placeSchema.validate(
-    req.body
-  );
+  const { error } = placeSchema.validate(req.body);
   if (error) {
-    const msg = error.details
-      .map((el) => el.message)
-      .join(",");
+    const msg = error.details.map((el) => el.message).join(",");
     return next(new ErrorHandler(msg, 400));
   } else {
     next();
@@ -67,13 +59,9 @@ const validatePlace = (req, res, next) => {
 };
 
 const validateReview = (req, res, next) => {
-  const { error } = reviewSchema.validate(
-    req.body
-  );
+  const { error } = reviewSchema.validate(req.body);
   if (error) {
-    const msg = error.details
-      .map((el) => el.message)
-      .join(",");
+    const msg = error.details.map((el) => el.message).join(",");
     return next(new ErrorHandler(msg, 400));
   } else {
     next();
@@ -97,9 +85,7 @@ app.post(
 app.get(
   "/places/:id",
   wrapAsync(async (req, res) => {
-    const place = await Place.findById(
-      req.params.id
-    );
+    const place = await Place.findById(req.params.id).populate("reviews");
     res.render("places/show", { place });
   })
 );
@@ -107,9 +93,7 @@ app.get(
 app.get(
   "/places/:id/edit",
   wrapAsync(async (req, res) => {
-    const place = await Place.findById(
-      req.params.id
-    );
+    const place = await Place.findById(req.params.id);
     res.render("places/edit", { place });
   })
 );
@@ -128,9 +112,7 @@ app.put(
 app.delete(
   "/places/:id",
   wrapAsync(async (req, res) => {
-    await Place.findByIdAndDelete(
-      req.params.id
-    ).populate("reviews");
+    await Place.findByIdAndDelete(req.params.id);
     res.redirect("/places");
   })
 );
@@ -140,13 +122,25 @@ app.post(
   validateReview,
   wrapAsync(async (req, res) => {
     const review = new Review(req.body.review);
-    const place = await Place.findById(
-      req.params.id
-    );
+    const place = await Place.findById(req.params.id);
     place.reviews.push(review);
     await review.save();
     await place.save();
     res.redirect(`/places/${req.params.id}`);
+  })
+);
+
+app.delete(
+  "/places/:place_id/reviews/:review_id",
+  wrapAsync(async (req, res) => {
+    const { place_id, review_id } = req.params;
+    await Place.findByIdAndDelete(req.params.place_id, {
+      $pull: {
+        reviews: { _id: review_id },
+      },
+    });
+    await Review.findByIdAndDelete(review_id);
+    res.redirect(`/places/${place_id}`);
   })
 );
 
@@ -156,13 +150,10 @@ app.all("*", (req, res, next) => {
 
 app.use((err, req, res, next) => {
   const { statusCode = 500 } = err;
-  if (!err.message)
-    err.message = "Oh no Something Went Wrong";
+  if (!err.message) err.message = "Oh no Something Went Wrong";
   res.status(statusCode).render("error", { err });
 });
 
 app.listen(port, () => {
-  console.log(
-    `Server is running on http://127.0.0.1:${port}`
-  );
+  console.log(`Server is running on http://127.0.0.1:${port}`);
 });
