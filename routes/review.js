@@ -5,6 +5,8 @@ const Place = require("../models/place");
 const Review = require("../models/review");
 const { reviewSchema } = require("../schemas/review");
 const router = express.Router({ mergeParams: true });
+const isValidObject = require("../middlewares/isValidObject");
+const isAuth = require("../middlewares/isAuth");
 
 const validateReview = (req, res, next) => {
   const { error } = reviewSchema.validate(req.body);
@@ -18,19 +20,25 @@ const validateReview = (req, res, next) => {
 
 router.post(
   "/",
+  isAuth,
+  isValidObject("/places"),
   validateReview,
   wrapAsync(async (req, res) => {
+    const { place_id } = req.params;
     const review = new Review(req.body.review);
     const place = await Place.findById(req.params.place_id);
     place.reviews.push(review);
     await review.save();
     await place.save();
-    res.redirect(`/places/${req.params.id}`);
+    req.flash("success_msg", "Place add successfully");
+    res.redirect(`/places/${place_id}`);
   })
 );
 
 router.delete(
   "/:review_id",
+  isAuth,
+  isValidObject("/places"),
   wrapAsync(async (req, res) => {
     const { place_id, review_id } = req.params;
     await Place.findByIdAndUpdate(place_id, { $pull: { reviews: review_id } });
