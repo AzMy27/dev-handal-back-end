@@ -3,13 +3,15 @@ const router = express.Router();
 const User = require("../models/user");
 const wrapAsync = require("../utils/wrapAsync");
 const passport = require("passport");
+const isNotAuth = require("../middlewares/isNotAuth");
 
-router.get("/register", (req, res) => {
+router.get("/register", isNotAuth, (req, res) => {
   res.render("auth/register");
 });
 
 router.post(
   "/register",
+  isNotAuth,
   wrapAsync(async (req, res) => {
     try {
       const { username, email, password } = req.body;
@@ -27,12 +29,13 @@ router.post(
   })
 );
 
-router.get("/login", (req, res) => {
+router.get("/login", isNotAuth, (req, res) => {
   res.render("auth/login");
 });
 
 router.post(
   "/login",
+  isNotAuth,
   passport.authenticate("local", {
     failureRedirect: "/login",
     failureFlash: {
