@@ -62,15 +62,6 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
-// app.get("/register", async (req, res, next) => {
-//   const user = new User({
-//     email: "user@gmail.com",
-//     username: "user",
-//   });
-//   const newUser = await User.register(user, "password");
-//   res.send(newUser);
-// });
-
 app.use("/", require("./routes/auth"));
 app.use("/places", require("./routes/places"));
 app.use("/places/:place_id/reviews", require("./routes/review"));
