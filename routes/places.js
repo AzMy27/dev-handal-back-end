@@ -37,4 +37,6 @@ router
 
 router.get("/:id/edit", isAuth, isAuthorPlace, isValidObject("/places"), wrapAsync(PlaceController.edit));
 
+router.delete("/:id/images", isAuth, isAuthorPlace, isValidObject("/places"), wrapAsync(PlaceController.destroyImages));
+
 module.exports = router;

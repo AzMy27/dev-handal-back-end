@@ -1,6 +1,6 @@
 const { reviewSchema } = require("../schemas/review");
 const { placeSchema } = require("../schemas/place");
-const ErrorHandler = require("../utils/ErrorHandler");
+const ErrorHandler = require("../utils/ExpressError");
 
 module.exports.validatePlace = (req, res, next) => {
   const { error } = placeSchema.validate(req.body);

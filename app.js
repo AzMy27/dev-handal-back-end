@@ -9,7 +9,7 @@ const path = require("path");
 const passport = require("passport");
 const localStrategy = require("passport-local");
 const User = require("./models/user");
-const ErrorHandler = require("./utils/ErrorHandler");
+const ExpressError = require("./utils/ExpressError");
 
 const port = 3000;
 

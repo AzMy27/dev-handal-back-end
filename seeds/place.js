@@ -182,7 +182,14 @@ async function seedPlaces() {
 
   try {
     const newsPlace = places.map((place) => {
-      return { ...place, author: "66fd54732a234a99ee762cb6" };
+      return {
+        ...place,
+        author: "66fd54732a234a99ee762cb6",
+        images: {
+          url: "public\\images\\image-1728268949776-804152050.png",
+          filename: "image-1728268949776-804152050.png",
+        },
+      };
     });
     await Place.deleteMany({});
     // await Place.insertMany(places);
