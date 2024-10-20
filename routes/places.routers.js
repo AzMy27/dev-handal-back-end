@@ -1,6 +1,6 @@
 const express = require("express");
 const wrapAsync = require("../utils/wrapAsync");
-const PlaceController = require("../controllers/places");
+const PlaceController = require("../controllers/places.controller");
 const router = express.Router();
 const isValidObject = require("../middlewares/isValidObject");
 const isAuth = require("../middlewares/isAuth");

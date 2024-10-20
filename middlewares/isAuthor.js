@@ -1,5 +1,5 @@
-const Place = require("../models/place");
-const Review = require("../models/review");
+const Place = require("../models/place.models");
+const Review = require("../models/review.models");
 
 module.exports.isAuthorPlace = async (req, res, next) => {
   const { id } = req.params;

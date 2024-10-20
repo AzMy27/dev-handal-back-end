@@ -1,4 +1,4 @@
-const Place = require("../models/place");
+const Place = require("../models/place.models");
 const fs = require("fs");
 const ExpressError = require("../utils/ExpressError");
 

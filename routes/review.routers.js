@@ -1,6 +1,6 @@
 const express = require("express");
 const wrapAsync = require("../utils/wrapAsync");
-const ReviewController = require("../controllers/review");
+const ReviewController = require("../controllers/review.controller");
 const router = express.Router({ mergeParams: true });
 const isValidObject = require("../middlewares/isValidObject");
 const isAuth = require("../middlewares/isAuth");
